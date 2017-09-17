@@ -1,13 +1,13 @@
 
 #import "AppDelegate.h"
-#import "RegexKitLite.h"
+//#import "RegexKitLite.h"
 #import "GTMNSDictionary+URLArguments.h"
 #import <SBJSON/SBJSON.h>
 #import "UpdateOperation.h"
 #import "NSObject+DDExtensions.h"
 #import "GTMScriptRunner.h"
 #import "UKCrashReporter.h"
-#import "amazon_aws_secret_key.h"
+//#import "amazon_aws_secret_key.h"
 #import "SignedAwsSearchRequest.h"
 #import "mach/task.h"
 
@@ -107,7 +107,7 @@
 	[images removeAllObjects];
 	// if we don't do this, file descriptors from HTTP connections pile up
 	// and crash the application sooner or later
-	[[NSGarbageCollector defaultCollector] collectExhaustively];
+//	[[NSGarbageCollector defaultCollector] collectExhaustively];
 	[self logProcessSize];
 }
 
@@ -148,7 +148,7 @@
 
 
 - (IBAction)openApplicationWebsite:(id)sender {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.entropy.ch/software/macosx/album-artwork-assistant/"]];
+//	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.entropy.ch/software/macosx/album-artwork-assistant/"]];
 }
 
 
@@ -249,7 +249,7 @@
 // http://code.google.com/apis/ajaxsearch/signup.html
 //
 - (void)doFindImages:(id)sender {
-	[self doFindImagesAmazon];
+//	[self doFindImagesAmazon];
 	[self doFindImagesGoogle];
 
 	[images sortUsingSelector:@selector(areaCompare:)];
@@ -262,17 +262,23 @@
 
 - (void)doFindImagesGoogle {
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
-	NSString *baseUrl = @"http://ajax.googleapis.com/ajax/services/search/images";
+
+//https://api.qwant.com/api/search/images?count=10&offset=1&q=cars
+
+	NSString *baseUrl = @"https://api.qwant.com/api/search/images";
 	[params setValue:albumTitle forKey:@"q"];
-	[params setValue:@"moderate" forKey:@"safe"];
-	[params setValue:@"small|medium|large|xlarge" forKey:@"imgsz"];
-	[params setValue:@"1.0" forKey:@"v"];
-	[params setValue:@"large" forKey:@"rsz"];
-	[params setValue:@"ABQIAAAAt1bSH3Wmg2fvvnIb0y5uvhS0jwAaCC029fzyhtFJrJElrIqu7RRizOg1QMwXnj23EWMmFM6G-MNfyw" forKey:@"key"];
+	[params setValue:[NSNumber numberWithInt:GOOGLE_IMAGE_RESULTS_PER_PAGE] forKey:@"count"];
+//	[params setValue:@"1" forKey:@"offset"];
+//	[params setValue:@"moderate" forKey:@"safe"];
+//	[params setValue:@"small|medium|large|xlarge" forKey:@"imgsz"];
+//	[params setValue:@"1.0" forKey:@"v"];
+//	[params setValue:@"large" forKey:@"rsz"];
+//	[params setValue:@"ABQIAAAAt1bSH3Wmg2fvvnIb0y5uvhS0jwAaCC029fzyhtFJrJElrIqu7RRizOg1QMwXnj23EWMmFM6G-MNfyw" forKey:@"key"];
 
 	for (int i = 0; i < GOOGLE_IMAGE_RESULT_PAGE_COUNT; i++) {
-		[params setValue:[NSNumber numberWithInt:i * GOOGLE_IMAGE_RESULTS_PER_PAGE] forKey:@"start"];
+		[params setValue:[NSNumber numberWithInt:i * GOOGLE_IMAGE_RESULTS_PER_PAGE] forKey:@"offset"];
 		NSString *urlString = [NSString stringWithFormat:@"%@?%@", baseUrl, [params gtm_httpArgumentsString]];
+//		NSLog(@"urlString=%@",urlString);
 #ifdef DEBUG_NONET
 		NSLog(@"using dummy google data");
 		urlString = @"file://localhost/Users/liyanage/git/album-artwork-assistant/test/testdata.google.json";
@@ -284,6 +290,8 @@
 		NSURLResponse *response = nil;
 		NSError *error = nil;
 		NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//		NSLog(@"response=%@",response);
+//		NSLog(@"data=%@",data);
 		if (!data) {
 			[window presentError:error modalForWindow:window delegate:self didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:) contextInfo:nil];
 			[self clearBusy];
@@ -291,16 +299,17 @@
 		}
 
 		id imageData = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] JSONValue];
+//		NSLog(@"imageData=%@",imageData);
 		
-		for (id item in [imageData valueForKeyPath:@"responseData.results"]) {
+		for (id item in [imageData valueForKeyPath:@"data.result.items"]) {
 			id io = [[ImageSearchItem alloc] initWithSearchResult:item];
-			[io setSource:@"Google"];
+			[io setSource:@"Qwant"];
 			[images addObject:io];
 		}
 	}
 }
 
-
+#if 0
 // http://docs.amazonwebservices.com/AWSECommerceService/2008-06-26/DG/
 - (void)doFindImagesAmazon {
 
@@ -364,7 +373,7 @@
 	}
 
 }
-
+#endif
 
 # pragma mark update operation manipulation
 
@@ -600,8 +609,8 @@
 
 
 - (void)cleanupString:(NSMutableString *)input {
-	[input replaceOccurrencesOfRegex:@"\\s*\\[.+\\]\\s*" withString:@""];
-	[input replaceOccurrencesOfRegex:@"\\s*\\(.+\\)\\s*" withString:@""];
+//	[input replaceOccurrencesOfRegex:@"\\s*\\[.+\\]\\s*" withString:@""];
+//	[input replaceOccurrencesOfRegex:@"\\s*\\(.+\\)\\s*" withString:@""];
 }
 
 
@@ -611,17 +620,17 @@
 - (void)awakeFromNib {
 	images = [NSMutableArray array];
 	[self setQueue:[NSMutableArray array]];
-	[self setDataStore:[[DataStore alloc] init]];
+//	[self setDataStore:[[DataStore alloc] init]];
 
 	[self setupDefaults];
 	[self setupNotifications];
 
 	// force a fetch to get the count
 	// http://theocacao.com/document.page/305
-	[groupsController fetchWithRequest:nil merge:NO error:nil];
-	if ([[groupsController arrangedObjects] count] > 0) {
-		[queueDrawer open];
-	}
+//	[groupsController fetchWithRequest:nil merge:NO error:nil];
+//	if ([[groupsController arrangedObjects] count] > 0) {
+//		[queueDrawer open];
+//	}
 
 }
 
@@ -771,7 +780,7 @@
 
 	if ([[tabViewItem identifier] isEqualToString:@"webSearch"]) {
 		NSMutableString *queryString = [[albumTitle stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] mutableCopy];
-		[queryString replaceOccurrencesOfRegex:@"&" withString:@"%26"];
+//		[queryString replaceOccurrencesOfRegex:@"&" withString:@"%26"];
 		NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.google.com/search?ie=UTF-8&q=%@", queryString]];
 #ifdef DEBUG_NONET
 		url = [NSURL URLWithString:@"file://localhost/Users/liyanage/git/album-artwork-assistant/Resources/English.lproj/Album%20Artwork%20Assistant%20Help/Album%20Artwork%20Assistant%20Help.html"];

@@ -15,15 +15,16 @@
 	NSArray *tracks;
 	ImageSearchItem *imageItem;
 	NSData *imageData;
-	NSURL *fileUrl;
+	NSURL * _fileUrl;
 	BOOL didComplete;
 }
 
-@property(assign) NSURL *fileUrl;
+//@property(unsafe_unretained) NSURL *fileUrl;
 
 - (id)initWithTracks:(NSArray *)tracks imageData:(NSData *)imageData statusDelegate:(id <StatusDelegateProtocol>)statusDelegate;
 - (NSString *)albumTitle;
 - (BOOL)didComplete;
 
+- (NSURL *)fileUrl;
 
 @end

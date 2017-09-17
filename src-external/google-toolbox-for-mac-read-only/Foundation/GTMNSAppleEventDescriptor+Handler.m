@@ -26,24 +26,24 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
 
 + (id)gtm_descriptorWithPositionalHandler:(NSString*)handler 
                           parametersArray:(NSArray*)params {
-  return [[[self alloc] gtm_initWithPositionalHandler:handler 
-                                      parametersArray:params] autorelease];
+  return [[self alloc] gtm_initWithPositionalHandler:handler 
+                                      parametersArray:params];
 }
 
 + (id)gtm_descriptorWithPositionalHandler:(NSString*)handler 
                      parametersDescriptor:(NSAppleEventDescriptor*)params {
-  return [[[self alloc] gtm_initWithPositionalHandler:handler 
-                                 parametersDescriptor:params] autorelease];
+  return [[self alloc] gtm_initWithPositionalHandler:handler 
+                                 parametersDescriptor:params];
 }
 
 + (id)gtm_descriptorWithLabeledHandler:(NSString*)handler
                                 labels:(AEKeyword*)labels
                             parameters:(id*)params
                                  count:(NSUInteger)count {
-  return [[[self alloc] gtm_initWithLabeledHandler:handler
+  return [[self alloc] gtm_initWithLabeledHandler:handler
                                             labels:labels
                                         parameters:params
-                                             count:count] autorelease];
+                                             count:count];
 }
 
 - (id)gtm_initWithPositionalHandler:(NSString*)handler 
@@ -52,7 +52,7 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
                         parametersDescriptor:[params gtm_appleEventDescriptor]];
 }
 
-- (id)gtm_initWithPositionalHandler:(NSString*)handler 
+- (id)initWithPositionalHandler:(NSString*)handler
                parametersDescriptor:(NSAppleEventDescriptor*)params {
   if ((self = [self initWithEventClass:kASAppleScriptSuite
                                eventID:kASSubroutineEvent
@@ -65,7 +65,6 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
     // has details.
     handler = [handler lowercaseString];
     if (!handler) {
-      [self release];
       return nil;
     }
     NSAppleEventDescriptor *handlerDesc 
@@ -79,7 +78,7 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
 }
 
 
-- (id)gtm_initWithLabeledHandler:(NSString*)handler
+- (id)initWithLabeledHandler:(NSString*)handler
                           labels:(AEKeyword*)labels
                       parameters:(id*)params
                            count:(NSUInteger)count {
@@ -89,7 +88,6 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
                               returnID:kAutoGenerateReturnID
                          transactionID:kAnyTransactionID])) {
     if (!handler) {
-      [self release];
       return nil;
     }
     // Create an NSAppleEventDescriptor with the method handler. Note that the 
@@ -103,7 +101,6 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
         if (![params[i] isKindOfClass:[NSDictionary class]]) {
           _GTMDevLog(@"Must pass in dictionary for keyASPrepositionGiven "
                       "(got %@)", params[i]);
-          [self release];
           self = nil;
           break;
         }
@@ -112,7 +109,6 @@ GTM_METHOD_CHECK(NSProcessInfo, gtm_appleEventDescriptor);
         if (!userDesc) {
           _GTMDevLog(@"Dictionary for keyASPrepositionGiven must be a user "
                       "record field dictionary (got %@)", params[i]);
-          [self release];
           self = nil;
           break;
         }

@@ -28,7 +28,7 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
 @implementation GTMScriptRunner
 
 + (GTMScriptRunner *)runner {
-  return [[[self alloc] init] autorelease];
+  return [[self alloc] init];
 }
 
 + (GTMScriptRunner *)runnerWithBash {
@@ -48,7 +48,7 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
 }
 
 + (GTMScriptRunner *)runnerWithInterpreter:(NSString *)interp withArgs:(NSArray *)args {
-  return [[[self alloc] initWithInterpreter:interp withArgs:args] autorelease];
+  return [[self alloc] initWithInterpreter:interp withArgs:args];
 }
 
 - (id)init {
@@ -63,7 +63,7 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
   if ((self = [super init])) {
     trimsWhitespace_ = YES;
     interpreter_ = [interp copy];
-    interpreterArgs_ = [args retain];
+    interpreterArgs_ = args;
     if (!interpreter_) {
       interpreter_ = @"/bin/sh";
     }
@@ -71,12 +71,6 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
   return self;
 }
 
-- (void)dealloc {
-  [environment_ release];
-  [interpreter_ release];
-  [interpreterArgs_ release];
-  [super dealloc];
-}
 
 - (NSString *)description {
   return [NSString stringWithFormat:@"%@<%p>{ interpreter = '%@', args = %@, environment = %@ }",
@@ -102,15 +96,15 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
   [toTask closeFile];
   
   NSData *outData = [fromTask readDataToEndOfFile];
-  NSString *output = [[[NSString alloc] initWithData:outData
-                                            encoding:NSUTF8StringEncoding] autorelease];
+  NSString *output = [[NSString alloc] initWithData:outData
+                                            encoding:NSUTF8StringEncoding];
   
   // Handle returning standard error if |err| is not nil
   if (err) {
     NSFileHandle *stderror = [[task standardError] fileHandleForReading];
     NSData *errData = [stderror readDataToEndOfFile];
-    *err = [[[NSString alloc] initWithData:errData
-                                  encoding:NSUTF8StringEncoding] autorelease];
+    *err = [[NSString alloc] initWithData:errData
+                                  encoding:NSUTF8StringEncoding];
     if (trimsWhitespace_) {
       *err = [*err stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
@@ -155,15 +149,15 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
   }
 
   NSData *outData = [fromTask readDataToEndOfFile];
-  NSString *output = [[[NSString alloc] initWithData:outData
-                                            encoding:NSUTF8StringEncoding] autorelease];
+  NSString *output = [[NSString alloc] initWithData:outData
+                                            encoding:NSUTF8StringEncoding];
   
   // Handle returning standard error if |err| is not nil
   if (err) {
     NSFileHandle *stderror = [[task standardError] fileHandleForReading];
     NSData *errData = [stderror readDataToEndOfFile];
-    *err = [[[NSString alloc] initWithData:errData
-                                  encoding:NSUTF8StringEncoding] autorelease];
+    *err = [[NSString alloc] initWithData:errData
+                                  encoding:NSUTF8StringEncoding];
     if (trimsWhitespace_) {
       *err = [*err stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
@@ -193,8 +187,7 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
 }
 
 - (void)setEnvironment:(NSDictionary *)newEnv {
-  [environment_ autorelease];
-  environment_ = [newEnv retain];
+  environment_ = newEnv;
 }
 
 - (BOOL)trimsWhitespace {
@@ -211,7 +204,7 @@ static BOOL LaunchNSTaskCatchingExceptions(NSTask *task);
 @implementation GTMScriptRunner (PrivateMethods)
 
 - (NSTask *)interpreterTaskWithAdditionalArgs:(NSArray *)args {
-  NSTask *task = [[[NSTask alloc] init] autorelease];
+  NSTask *task = [[NSTask alloc] init];
   [task setLaunchPath:interpreter_];
   [task setStandardInput:[NSPipe pipe]];
   [task setStandardOutput:[NSPipe pipe]];

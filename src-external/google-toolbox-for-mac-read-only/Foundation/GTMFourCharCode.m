@@ -25,24 +25,23 @@
 @implementation GTMFourCharCode
 
 + (id)stringWithFourCharCode:(FourCharCode)code {
-  return GTMCFAutorelease(UTCreateStringForOSType(code));
+  return CFBridgingRelease(UTCreateStringForOSType(code));
 }
 
 + (id)fourCharCodeWithString:(NSString*)string {
-  return [[[self alloc] initWithString:string] autorelease];
+  return [[self alloc] initWithString:string];
 }
 
 + (id)fourCharCodeWithFourCharCode:(FourCharCode)code {
-  return [[[self alloc] initWithFourCharCode:code] autorelease];
+  return [[self alloc] initWithFourCharCode:code];
 }
 
 - (id)initWithString:(NSString*)string {
   NSUInteger length = [string length];
   if (length == 0 || length > 4) {
-    [self release];
     return nil;
   } else {
-    return [self initWithFourCharCode:UTGetOSTypeFromString((CFStringRef)string)];
+    return [self initWithFourCharCode:UTGetOSTypeFromString((__bridge CFStringRef)string)];
   }
 }
 
@@ -88,7 +87,7 @@
 }
 
 - (NSString*)stringValue {
-  return GTMCFAutorelease(UTCreateStringForOSType(code_));
+  return CFBridgingRelease(UTCreateStringForOSType(code_));
 }
 
 - (NSNumber*)numberValue {

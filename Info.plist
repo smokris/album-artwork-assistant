@@ -28,6 +28,11 @@
 	<string>${CURRENT_PROJECT_VERSION}</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.6.0</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>

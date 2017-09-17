@@ -88,27 +88,27 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
     typeScript
   };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_scriptValue)
-                                      forTypes:types
-                                         count:sizeof(types)/sizeof(DescType)];
-  
-  DescType types2[] = { 
-    'evnt'  // No type code for this one
-  };
-  
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_eventValue)
-                                      forTypes:types2
-                                         count:sizeof(types2)/sizeof(DescType)];
-  
-  DescType types3[] = {
-    typeGTMOSAID
-  };
-  
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_osaIDValue)
-                                      forTypes:types3
-                                         count:sizeof(types3)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_scriptValue)
+                                        forTypes:types
+                                           count:sizeof(types)/sizeof(DescType)];
+    
+    DescType types2[] = { 
+      'evnt'  // No type code for this one
+    };
+    
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_eventValue)
+                                        forTypes:types2
+                                           count:sizeof(types2)/sizeof(DescType)];
+    
+    DescType types3[] = {
+      typeGTMOSAID
+    };
+    
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_osaIDValue)
+                                        forTypes:types3
+                                           count:sizeof(types3)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor *)gtm_executeAppleEvent:(NSAppleEventDescriptor *)event 
@@ -218,8 +218,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
                                    kOSAModeNull,
                                    &result);
   if (error == noErr) {
-    desc = [[[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&result] 
-            autorelease];
+    desc = [[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&result];
   } else {
     _GTMDevLog(@"Unable to coerce script %d", error);
   }
@@ -268,7 +267,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
   NSUInteger argCount = handlerOrigLength - [handlerName length];
   NSMutableArray *args = [NSMutableArray arrayWithCapacity:argCount];
   for (NSUInteger i = 0; i < argCount; ++i) {
-    id arg;
+    __unsafe_unretained id arg;
     // +2 to ignore _sel and _cmd
     [invocation getArgument:&arg atIndex:i + 2];
     [args addObject:arg];
@@ -278,7 +277,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
                                                          parameters:args 
                                                               error:&error];  
   if ([[invocation methodSignature] methodReturnLength] > 0) {
-    id returnValue = [desc gtm_objectValue];
+    __unsafe_unretained id returnValue = [desc gtm_objectValue];
     [invocation setReturnValue:&returnValue];
   }
 }
@@ -356,8 +355,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
   OSAError error = OSAGetHandlerNames(component, kOSAModeNull, osaID, &names);
   if (error == noErr) {
     NSAppleEventDescriptor *desc 
-      = [[[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&names] 
-         autorelease];
+      = [[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&names];
     array = [desc gtm_objectValue];
   }
   if (error != noErr) {
@@ -375,8 +373,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
   OSAError error = OSAGetPropertyNames(component, kOSAModeNull, osaID, &names);
   if (error == noErr) {
     NSAppleEventDescriptor *desc 
-      = [[[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&names] 
-         autorelease];
+      = [[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&names];
     array = [desc gtm_objectValue];
   }
   if (error != noErr) {
@@ -426,8 +423,8 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
                                    kOSAModeNull, 
                                    &aeDesc);
         if (err == noErr) {
-          desc = [[[NSAppleEventDescriptor alloc] 
-                   initWithAEDescNoCopy:&aeDesc] autorelease];
+          desc = [[NSAppleEventDescriptor alloc] 
+                   initWithAEDescNoCopy:&aeDesc];
         }
       }
     }
@@ -515,8 +512,8 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
 
 - (NSAppleScript*)gtm_scriptValue {
   NSDictionary *error;
-  NSAppleScript *script = [[[NSAppleScript alloc] _initWithData:[self data] 
-                                                          error:&error] autorelease];
+  NSAppleScript *script = [[NSAppleScript alloc] _initWithData:[self data] 
+                                                          error:&error];
   if (!script) {
     _GTMDevLog(@"Unable to create script: %@", error);  // COV_NF_LINE
   }
@@ -526,7 +523,7 @@ GTM_METHOD_CHECK(NSAppleEventDescriptor, gtm_registerSelector:forTypes:count:);
 - (NSAppleScript*)gtm_osaIDValue {
   _GTMDevAssert([[self data] length] == sizeof(OSAID), nil);
   OSAID osaID = *(const OSAID*)[[self data] bytes];
-  return [[[NSAppleScript alloc] _initWithScriptIDNoCopy:osaID] autorelease];
+  return [[NSAppleScript alloc] _initWithScriptIDNoCopy:osaID];
 }
 
 - (NSString*)gtm_eventValue {

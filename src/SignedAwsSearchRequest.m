@@ -27,14 +27,6 @@ NSInteger stringByteSort(NSString *a, NSString *b, void *context);
 }
 
 
-- (void)dealloc {
-	[accessKeyId release];
-	[secretAccessKey release];
-	[awsHost release];
-	[awsPath release];
-	[associateTag release];
-	[super dealloc];
-}
 
 
 - (NSString *)searchUrlForParameterDictionary:(NSDictionary *)inParams {
@@ -74,7 +66,7 @@ NSInteger stringByteSort(NSString *a, NSString *b, void *context);
 
 
 - (NSString *)utcTimestamp {
-	NSDateFormatter *outputFormatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
 	outputFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
 	outputFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 	return [outputFormatter stringFromDate:[NSDate date]];
@@ -96,7 +88,7 @@ NSInteger stringByteSort(NSString *a, NSString *b, void *context);
 
 
 - (NSMutableDictionary *)preparedParameterDictionaryForInput:(NSDictionary *)inParams {
-	NSMutableDictionary *params = [[inParams mutableCopy] autorelease];
+	NSMutableDictionary *params = [inParams mutableCopy];
 	[params setValue:@"AWSECommerceService"  forKey:@"Service"];
 	[params setValue:self.accessKeyId        forKey:@"AWSAccessKeyId"];
 	[params setValue:self.associateTag       forKey:@"AssociateTag"];
@@ -107,7 +99,7 @@ NSInteger stringByteSort(NSString *a, NSString *b, void *context);
 
 + (NSString *)decodeKey:(char *)keyBytes length:(int)length {
 	NSData *data = [NSData gtm_dataByInflatingBytes:keyBytes length:length];
-	return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
 @end

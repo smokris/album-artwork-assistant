@@ -14,14 +14,15 @@
 
 @interface ImageSearchItem : NSObject <QLPreviewItem> {
 	NSDictionary *searchResult;
-	NSData *imageData;
-	NSURL *fileUrl;
-	NSString *source;
+	NSData *__unsafe_unretained imageData;
+	NSData * imageData2;
+	NSURL * _fileUrl;
+	NSString *__unsafe_unretained source;
 }
 
-@property(assign) NSData *imageData;
-@property(assign) NSURL *fileUrl;
-@property(assign) NSString *source;
+@property(unsafe_unretained) NSData *imageData;
+//@property(unsafe_unretained) NSURL *fileUrl;
+@property(unsafe_unretained) NSString *source;
 
 - (id)initWithSearchResult:(NSDictionary *)searchResult;
 - (NSComparisonResult)areaCompare:(ImageSearchItem *)anItem;
@@ -33,5 +34,6 @@
 - (id)imageRepresentation;
 - (NSString *)imageSubtitle;
 - (NSData *)dataError:(NSError **)error;
+- (NSURL *)fileUrl;
 
 @end

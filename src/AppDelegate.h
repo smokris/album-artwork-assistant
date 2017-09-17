@@ -42,18 +42,18 @@ enum {
 	BOOL isImageSelected;
 	BOOL isQueueProcessing;
 	BOOL isBusy;
-	NSString *statusMessage;
-	NSMutableArray *queue;
+	NSString *__unsafe_unretained statusMessage;
+	NSMutableArray *__unsafe_unretained queue;
 	
-	DataStore *dataStore;
+	DataStore *__unsafe_unretained dataStore;
 }
 
 @property BOOL isBusy;
 @property BOOL isImageSelected;
 @property BOOL isQueueProcessing;
-@property(assign) NSString *statusMessage;
-@property(assign) NSMutableArray *queue;
-@property(assign) DataStore *dataStore;
+@property(unsafe_unretained) NSString *statusMessage;
+@property(unsafe_unretained) NSMutableArray *queue;
+@property(unsafe_unretained) DataStore *dataStore;
 
 - (IBAction)removeSelectedTrackGroups:(id)sender;
 - (IBAction)installiTunesAppleScript:(id)sender;

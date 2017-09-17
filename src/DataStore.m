@@ -37,7 +37,7 @@
         return managedObjectModel;
     }
 	
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+    managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];    
     return managedObjectModel;
 }
 
@@ -144,7 +144,7 @@
 		NSLog(@"Unable to get entity description for entity named '%@'", ed);
 		return nil;
 	}
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
 	[request setEntity:ed];
 	return request;
 }

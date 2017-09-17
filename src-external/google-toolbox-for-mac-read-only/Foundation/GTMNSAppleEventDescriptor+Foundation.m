@@ -232,7 +232,7 @@ static NSMutableDictionary *gTypeMap = nil;
   [invocation setArgument:(void*)bytes atIndex:2];
   [invocation setTarget:numberClass];
   [invocation invoke];
-  NSNumber *value = nil;
+  __unsafe_unretained NSNumber *value = nil;
   [invocation getReturnValue:&value];
   return value;
 }
@@ -260,11 +260,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeAEList,
   };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_arrayValue)
-                                     forTypes:types
-                                        count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_arrayValue)
+                                       forTypes:types
+                                          count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -290,11 +290,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeAERecord,
   };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_dictionaryValue)
-                                    forTypes:types
-                                       count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_dictionaryValue)
+                                      forTypes:types
+                                         count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -350,11 +350,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeNull
   };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_nullValue)
-                                      forTypes:types
-                                         count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_nullValue)
+                                        forTypes:types
+                                           count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -374,11 +374,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeChar,
     typeIntlText };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(stringValue)
-                                      forTypes:types
-                                         count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(stringValue)
+                                        forTypes:types
+                                           count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -400,11 +400,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeIEEE32BitFloatingPoint,
     typeIEEE64BitFloatingPoint };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_numberValue)
-                                     forTypes:types
-                                        count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_numberValue)
+                                       forTypes:types
+                                          count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -488,11 +488,11 @@ static NSMutableDictionary *gTypeMap = nil;
     typeEnumerated,
   };
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_fourCharCodeValue)
-                                      forTypes:types
-                                         count:sizeof(types)/sizeof(DescType)];
-  [pool release];
+  @autoreleasepool {
+    [NSAppleEventDescriptor gtm_registerSelector:@selector(gtm_fourCharCodeValue)
+                                        forTypes:types
+                                           count:sizeof(types)/sizeof(DescType)];
+  }
 }
 
 - (NSAppleEventDescriptor*)gtm_appleEventDescriptor {
@@ -516,7 +516,7 @@ static NSMutableDictionary *gTypeMap = nil;
   AppleEvent replyEvent = { typeNull, NULL };
   OSStatus err = AESendMessage([self aeDesc], &replyEvent, mode, timeout * 60);
   NSAppleEventDescriptor *replyDesc 
-    = [[[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&replyEvent] autorelease];
+    = [[NSAppleEventDescriptor alloc] initWithAEDescNoCopy:&replyEvent];
   if (err) {
     isGood = NO;
     _GTMDevLog(@"Unable to send message: %@ %d", self, err);

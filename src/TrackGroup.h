@@ -14,9 +14,9 @@
 	NSImage *tinyAlbumImage;
 }
 
-@property (retain) NSData *imageData;
-@property (retain) NSString *title;
-@property (retain) NSSet *tracks;
+@property (strong) NSData *imageData;
+@property (strong) NSString *title;
+@property (strong) NSSet *tracks;
 
 @end
 

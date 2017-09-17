@@ -12,7 +12,7 @@
 @implementation ImageSearchItem
 
 @synthesize imageData;
-@synthesize fileUrl;
+//@synthesize fileUrl;
 @synthesize source;
 
 
@@ -38,13 +38,13 @@
 
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@ %@", [super description], [searchResult valueForKey:@"url"]];
+	return [NSString stringWithFormat:@"%@ %@", [super description], [searchResult valueForKey:@"media"]];
 //	return [searchResult valueForKey:@"url"];
 }
 
 
 - (NSString *)url {
-	return [searchResult valueForKey:@"url"];
+	return [searchResult valueForKey:@"media"];
 }
 	
 
@@ -63,7 +63,7 @@
 #pragma mark IKImageBrowserItem protocol methods
 
 - (NSString *)imageUID {
-	return [searchResult valueForKey:@"url"];
+	return [searchResult valueForKey:@"media"];
 }
 
 
@@ -74,7 +74,13 @@
 
 
 - (id)imageRepresentation {
-	return [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[searchResult valueForKey:@"tbUrl"]]];
+	if (!imageData2)
+	{
+		NSString *thumbnail = [NSString stringWithFormat:@"https:%@",[searchResult valueForKey:@"thumbnail"]];
+		NSLog(@"%@",thumbnail);
+		imageData2= [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:thumbnail]];
+	}
+	return imageData2;
 }
 
 
@@ -139,7 +145,7 @@
 
 
 - (NSURL *)fileUrl {
-	if (fileUrl) return fileUrl;
+	if (_fileUrl) return _fileUrl;
 	
 	NSString *tempFilePath = [NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), [[self url] lastPathComponent]];
 	NSError *error = nil;
@@ -149,8 +155,8 @@
 		NSLog(@"Unable to store image data to temp file '%@'", tempFilePath);
 		return nil;
 	}
-	[self setFileUrl:[NSURL fileURLWithPath:tempFilePath]];
-	return fileUrl;
+	_fileUrl = [NSURL fileURLWithPath:tempFilePath];
+	return _fileUrl;
 }
 
 

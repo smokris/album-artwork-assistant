@@ -28,8 +28,8 @@
 	NSString *awsHost, *awsPath, *associateTag;
 }
 
-@property (retain) NSString *accessKeyId, *secretAccessKey;
-@property (retain) NSString *awsHost, *awsPath, *associateTag;
+@property (strong) NSString *accessKeyId, *secretAccessKey;
+@property (strong) NSString *awsHost, *awsPath, *associateTag;
 
 // These two are the public API
 - (id)initWithAccessKeyId:(NSString *)accessKeyId secretAccessKey:(NSString *)secretAccessKey;
