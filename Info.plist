@@ -6,10 +6,16 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleGetInfoString</key>
+	<string>${CURRENT_PROJECT_VERSION}, © 2008-2012 Marc Liyanage</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>${PRODUCT_NAME} Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>${PRODUCT_NAME} Help</string>
 	<key>CFBundleIconFile</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>ch.entropy.album-artwork-assistant</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -18,10 +24,10 @@
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleGetInfoString</key>
-	<string>${CURRENT_PROJECT_VERSION}, © 2008-2012 Marc Liyanage</string>
 	<key>CFBundleVersion</key>
 	<string>${CURRENT_PROJECT_VERSION}</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.6.0</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
@@ -30,17 +36,11 @@
 	<string>NSApplication</string>
 	<key>OSAScriptingDefinition</key>
 	<string>music-artwork.sdef</string>
-	<key>CFBundleHelpBookFolder</key>
-	<string>${PRODUCT_NAME} Help</string>
-	<key>CFBundleHelpBookName</key>
-	<string>${PRODUCT_NAME} Help</string>
+	<key>SUEnableSystemProfiling</key>
+	<true/>
 	<key>SUFeedURL</key>
 	<string>${SU_FEED_URL}</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
-	<key>SUEnableSystemProfiling</key>
-	<true/>
-	<key>LSMinimumSystemVersion</key>
-	<string>10.6.0</string>
 </dict>
 </plist>
